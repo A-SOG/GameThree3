@@ -40,7 +40,7 @@ namespace engine::resource {
 
         void clear();        // 清空所有资源
 
-        // 当前设计中，我们只需要一个ResourceManager，所有权不变，所以不需要拷贝、移动相关构造及赋值运算符
+        // 所有权不变，所以不需要拷贝、移动相关构造及赋值运算符
         ResourceManager(const ResourceManager&) = delete;
         ResourceManager& operator=(const ResourceManager&) = delete;
         ResourceManager(ResourceManager&&) = delete;
