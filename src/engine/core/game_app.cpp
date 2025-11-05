@@ -5,6 +5,7 @@
 #include <spdlog/spdlog.h>
 #include "../render/renderer.h"
 #include "../render/camera.h"
+#include "../input/input_manager.h"
 #include"config.h"
 namespace engine::core {
 
@@ -12,25 +13,26 @@ namespace engine::core {
 
     GameApp::~GameApp() {
         if (is_running_) {
-          //  spdlog::warn("GameApp 被销毁时没有显式关闭。现在关闭。 ...");
+
             close();
         }
     }
 
     void GameApp::run() {
         if (!init()) {
-           spdlog::error("初始化失败，无法运行游戏。");
+            spdlog::error("初始化失败，无法运行游戏。");
             return;
         }
         while (is_running_) {
             time_->update();
             float delta_time = time_->getDeltaTime();
+            input_manager_->update();//每帧首先更新输入管理器
 
             handleEvents();
             update(delta_time);
             render();
 
-           // spdlog::info("delta_time: {}", delta_time);
+
         }
 
         close();
@@ -45,6 +47,8 @@ namespace engine::core {
         if (!initResourceManager()) return false;
         if (!initRenderer()) return false;
         if (!initCamera()) return false;
+        if (!initInputManager()) return false;
+
 
         // 测试资源管理器
         testResourceManager();
@@ -55,13 +59,13 @@ namespace engine::core {
     }
     void GameApp::handleEvents()
     {
+        if (input_manager_->shouldQuit()) {
+            spdlog::trace("GameApp 收到来自 InputManager 的退出请求。");
+            is_running_ = false;
+            return;
 
-        SDL_Event event;
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_EVENT_QUIT) {
-                is_running_ = false;
-            }
         }
+        testInputManager();
     }
     void GameApp::update(float delta_time)
     {
@@ -69,13 +73,13 @@ namespace engine::core {
     }
     void GameApp::render()
     {
-       
+
         renderer_->clearScreen(); //  清除屏幕
 
-       
+
         testRenderer(); // 具体渲染代码
 
-       
+
         renderer_->present(); // 更新屏幕显示
     }
 
@@ -104,10 +108,10 @@ namespace engine::core {
             config_ = std::make_unique<engine::core::Config>("assets/config.json");
 
         }
-        catch(const std::exception& e){
+        catch (const std::exception& e) {
             spdlog::error("初始化配置失败: {}", e.what());
             return false;
-             
+
         }
         spdlog::trace("配置初始化成功。");
         return true;
@@ -120,9 +124,9 @@ namespace engine::core {
         }
 
         window_ = SDL_CreateWindow(
-            config_->window_title_.c_str(), 
-            config_->window_width_, 
-            config_->window_height_, SDL_WINDOW_RESIZABLE);     
+            config_->window_title_.c_str(),
+            config_->window_width_,
+            config_->window_height_, SDL_WINDOW_RESIZABLE);
         if (window_ == nullptr) {
             spdlog::error("无法创建窗口! SDL错误: {}", SDL_GetError());
             return false;
@@ -140,14 +144,14 @@ namespace engine::core {
         int vsync_mode = config_->vsync_enabled_ ? SDL_RENDERER_VSYNC_ADAPTIVE : SDL_RENDERER_VSYNC_DISABLED;
         SDL_SetRenderVSync(sdl_renderer_, vsync_mode);
         spdlog::trace("VSync 设置为: {}", config_->vsync_enabled_ ? "Enabled" : "Disabled");
-     
+
         // 设置逻辑分辨率为窗口大小的一半（针对像素游戏）
         SDL_SetRenderLogicalPresentation(sdl_renderer_,
             config_->window_width_ / 2,
-            config_->window_height_ / 2, 
+            config_->window_height_ / 2,
             SDL_LOGICAL_PRESENTATION_LETTERBOX);
-        
-        
+
+
         spdlog::trace("SDL 初始化成功。");
         return true;
     }
@@ -212,6 +216,25 @@ namespace engine::core {
         spdlog::trace("相机初始化成功。");
         return true;
     }
+
+
+    bool GameApp::initInputManager()
+    {
+        try {
+            input_manager_ = std::make_unique<engine::input::InputManager>
+                (sdl_renderer_, config_.get());
+        }
+        catch (const std::exception& e)
+        {
+            spdlog::error("初始化输入管理器失败: {}", e.what());
+            return false;
+        }
+        spdlog::trace("输入管理器初始化成功。");
+        return true;
+    }
+
+
+
     void GameApp::testRenderer()
     {
         engine::render::Sprite sprite_world("assets/textures/Actors/frog.png");
@@ -236,4 +259,35 @@ namespace engine::core {
         if (key_state[SDL_SCANCODE_LEFT]) camera_->move(glm::vec2(-1, 0));
         if (key_state[SDL_SCANCODE_RIGHT]) camera_->move(glm::vec2(1, 0));
     }
-}
+    void GameApp::testInputManager()
+    {
+        std::vector<std::string> actions = {
+           "move_up",
+           "move_down",
+           "move_left",
+           "move_right",
+           "jump",
+           "attack",
+           "pause",
+           "MouseLeftClick",
+           "MouseRightClick"
+        };
+
+        for (const auto& action : actions)
+        {
+            if (input_manager_->isActionPressed(action))
+            {
+                spdlog::info(" {} 按下 ", action);
+            }
+            if (input_manager_->isActionReleased(action))
+            {
+                spdlog::info(" {} 抬起 ", action);
+            }
+            if (input_manager_->isActionDown(action))
+            {
+                spdlog::info(" {} 按下中 ", action);
+            }
+
+        }
+    }
+}//namepasce

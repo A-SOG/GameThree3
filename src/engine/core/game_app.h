@@ -16,6 +16,9 @@ namespace engine::render {
 	class Camera;
 }
 
+namespace engine::input {
+	class InputManager;
+}
 
 namespace engine::core {
 	class Time;
@@ -35,6 +38,8 @@ namespace engine::core {
 		std::unique_ptr<engine::render::Renderer> renderer_;
 		std::unique_ptr<engine::render::Camera> camera_;
 		std::unique_ptr<engine::core::Config>config_;
+		std::unique_ptr<engine::input::InputManager>input_manager_;
+
 	public:
 		GameApp();
 		~GameApp();//
@@ -62,12 +67,13 @@ namespace engine::core {
 		[[nodiscard]] bool initResourceManager();
 		[[nodiscard]] bool initRenderer();
 		[[nodiscard]] bool initCamera();
+		[[nodiscard]] bool initInputManager();
 
 		// 测试用函数
 		void testResourceManager();
 		void testRenderer();
 		void testCamera();
-
+		void testInputManager();
 	};
 
 }
