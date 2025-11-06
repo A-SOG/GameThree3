@@ -1,6 +1,7 @@
 #include "game_app.h"
 #include "time.h"
 #include "../resource/resource_manager.h"
+#include"../object/game_object.h"
 #include <SDL3/SDL.h>
 #include <spdlog/spdlog.h>
 #include "../render/renderer.h"
@@ -55,6 +56,7 @@ namespace engine::core {
         is_running_ = true;
 
         spdlog::trace("GameApp 初始化成功。");
+        testGameObject();
         return true;
     }
     void GameApp::handleEvents()
@@ -289,5 +291,11 @@ namespace engine::core {
             }
 
         }
+    }
+    void GameApp::testGameObject()
+    {
+        engine::object::GameObject game_object("test_game_object");
+        game_object.addComponent<engine::component::Component>();
+
     }
 }//namepasce
