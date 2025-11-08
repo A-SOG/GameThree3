@@ -4,7 +4,9 @@
 namespace engine::object {
 	class GameObject;
 }
-
+namespace engine::core {
+    class Context;
+}
 
 namespace engine::component {
  /**
@@ -51,11 +53,10 @@ namespace engine::component {
         //关键循环函数，
         // 全部设为保护，
         // 只有 GameObject 可以调用 未来将其中一个改为 = 0 以实现抽象类
-
-        virtual void init(){}
-        virtual void handleInput() {}
-        virtual void update(float) {}
-        virtual void render() {}
+        virtual void init() {}
+        virtual void handleInput(engine::core::Context&) {}                 
+        virtual void update(float, engine::core::Context&) = 0;            
+        virtual void render(engine::core::Context&) {}                     
         virtual void clean() {}
 
     };

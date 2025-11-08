@@ -14,6 +14,7 @@ namespace engine::resource {
 namespace engine::render {
 	class Renderer;
 	class Camera;
+	
 }
 
 namespace engine::input {
@@ -23,7 +24,7 @@ namespace engine::input {
 namespace engine::core {
 	class Time;
 	class Config;
-
+	class Context;
 	//初始化SDL管理循环
 	class GameApp final
 	{
@@ -39,7 +40,7 @@ namespace engine::core {
 		std::unique_ptr<engine::render::Camera> camera_;
 		std::unique_ptr<engine::core::Config>config_;
 		std::unique_ptr<engine::input::InputManager>input_manager_;
-
+		std::unique_ptr<engine::core::Context> context_;
 	public:
 		GameApp();
 		~GameApp();//
@@ -68,7 +69,7 @@ namespace engine::core {
 		[[nodiscard]] bool initRenderer();
 		[[nodiscard]] bool initCamera();
 		[[nodiscard]] bool initInputManager();
-
+		[[nodiscard]] bool initContext();
 		// 测试用函数
 		void testResourceManager();
 		void testRenderer();

@@ -1,7 +1,10 @@
 #include "game_app.h"
 #include "time.h"
+#include "context.h"
 #include "../resource/resource_manager.h"
 #include"../object/game_object.h"
+#include "../component/transform_component.h"
+#include "../component/sprite_component.h"
 #include <SDL3/SDL.h>
 #include <spdlog/spdlog.h>
 #include "../render/renderer.h"
@@ -9,7 +12,7 @@
 #include "../input/input_manager.h"
 #include"config.h"
 namespace engine::core {
-
+    engine::object::GameObject game_object("test_game_object");
     GameApp::GameApp() = default;
 
     GameApp::~GameApp() {
@@ -21,7 +24,7 @@ namespace engine::core {
 
     void GameApp::run() {
         if (!init()) {
-            spdlog::error("初始化失败，无法运行游戏。");
+            spdlog::error("GameApp 初始化失败，无法运行游戏。");
             return;
         }
         while (is_running_) {
@@ -49,6 +52,7 @@ namespace engine::core {
         if (!initRenderer()) return false;
         if (!initCamera()) return false;
         if (!initInputManager()) return false;
+        if (!initContext()) return false;
 
 
         // 测试资源管理器
@@ -80,7 +84,7 @@ namespace engine::core {
 
 
         testRenderer(); // 具体渲染代码
-
+        game_object.render(*context_);
 
         renderer_->present(); // 更新屏幕显示
     }
@@ -235,6 +239,21 @@ namespace engine::core {
         return true;
     }
 
+    bool GameApp::initContext()
+    {
+        try {
+
+            context_ = std::make_unique<engine::core::Context>
+                (*input_manager_, *renderer_, *camera_, *resource_manager_);
+       }
+        catch (const std::exception& e)
+        {
+            spdlog::error("初始化上下文失败: {}", e.what());
+            return false;
+        }
+        return true;
+    }
+
 
 
     void GameApp::testRenderer()
@@ -294,8 +313,11 @@ namespace engine::core {
     }
     void GameApp::testGameObject()
     {
-        engine::object::GameObject game_object("test_game_object");
-        game_object.addComponent<engine::component::Component>();
+        game_object.addComponent<engine::component::TransformComponent>(glm::vec2(100, 100));
+        game_object.addComponent<engine::component::SpriteComponent>("assets/textures/Props/big-crate.png",
+            *resource_manager_, engine::utils::Alignment::CENTER);
+        game_object.getComponent<engine::component::TransformComponent>()->setScale(glm::vec2(2.0f, 2.0f));
+        game_object.getComponent<engine::component::TransformComponent>()->setRotation(30.0f);
 
     }
 }//namepasce
