@@ -2,7 +2,7 @@
 #include "time.h"
 #include "context.h"
 #include "../resource/resource_manager.h"
-#include"../object/game_object.h"
+#include "../object/game_object.h"
 #include "../component/transform_component.h"
 #include "../component/sprite_component.h"
 #include <SDL3/SDL.h>

@@ -20,9 +20,9 @@ namespace engine::render {
 
 	//封装 SDL3 渲染操作
     
-    //       *包装 SDL_Renderer 并提供清除屏幕、绘制精灵和呈现最终图像的方法。
-    //          * 在构造时初始化。依赖于一个有效的 SDL_Renderer 和 ResourceManager。
-    //        构造失败会抛出异常。
+    //包装 SDL_Renderer 并提供清除屏幕、绘制精灵和呈现最终图像的方法。
+    //在构造时初始化。依赖于一个有效的 SDL_Renderer 和 ResourceManager。
+    //构造失败会抛出异常。
        
     class Renderer final {
     private:
@@ -43,28 +43,26 @@ namespace engine::render {
         Renderer(SDL_Renderer* sdl_renderer,
             engine::resource::ResourceManager* resource_manager);
 
-        /**
-        * @brief 绘制一个精灵
-        *
-        * @param sprite 包含纹理ID、源矩形和翻转状态的 Sprite 对象。
-        * @param position 世界坐标中的左上角位置。
-        * @param scale 缩放因子。
-        * @param angle 旋转角度（度）。
+        /*
+         绘制一个精灵
+        sprite 包含纹理ID、源矩形和翻转状态的 Sprite 对象。
+         position 世界坐标中的左上角位置。
+         scale 缩放因子。
+         angle 旋转角度（度）。
         */
 
         void drawSprite(const Camera& camera,
             const Sprite& sprite, const glm::vec2& position,
-            const glm::vec2& scale, double angle);
+            const glm::vec2& scale={1.0f,1.0f}, double angle=0.0f);
 
 
 
-        /**
-        * @brief 绘制视差滚动背景
-        *
-        * @param sprite 包含纹理ID、源矩形和翻转状态的 Sprite 对象。
-        * @param position 世界坐标。
-        * @param scroll_factor 滚动因子。
-        * @param scale 缩放因子。
+        /*
+         绘制视差滚动背景
+        sprite 包含纹理ID、源矩形和翻转状态的 Sprite 对象。
+        position 世界坐标。
+         scroll_factor 滚动因子。
+         scale 缩放因子。
         */
         void drawParallax(const Camera& camera, const Sprite& sprite,
             const glm::vec2& position,
@@ -73,12 +71,11 @@ namespace engine::render {
             const glm::vec2& scale = { 1.0f, 1.0f });
 
 
-        /**
-        * @brief 在屏幕坐标中直接渲染一个用于UI的Sprite对象。
-        *
-        * @param sprite 包含纹理ID、源矩形和翻转状态的Sprite对象。
-        * @param position 屏幕坐标中的左上角位置。
-        * @param size 可选：目标矩形的大小。如果为 std::nullopt，则使用Sprite的原始大小。
+        /*
+        在屏幕坐标中直接渲染一个用于UI的Sprite对象。
+       sprite 包含纹理ID、源矩形和翻转状态的Sprite对象。
+       position 屏幕坐标中的左上角位置。
+        size 可选：目标矩形的大小。如果为 std::nullopt，则使用Sprite的原始大小。
         */
 
         void drawUISprite(const Sprite& sprite,
@@ -108,7 +105,7 @@ namespace engine::render {
 
 
         std::optional<SDL_FRect> getSpriteSrcRect(const Sprite& sprite);
-        //获取精灵的源矩形，用于具体绘制。出现错误则返回std::nullopt并跳过绘制
+        //获取精灵的源矩形，用于具体绘制
 
         bool isRectInViewport(const Camera& camera, const SDL_FRect& rect);
         //判断矩形是否在视口中，用于视口裁剪

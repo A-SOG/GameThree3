@@ -20,6 +20,8 @@ namespace engine::render {
         bool is_flipped_ = false;                     // 是否水平翻转
 
     public:
+        //创建一个无效对象
+        Sprite() = default;
         /*
           构造一个精灵
            texture_id 纹理资源的标识符。不应为空。
