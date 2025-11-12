@@ -5,14 +5,10 @@
 
 namespace engine::core {
 
-
-
     Config::Config(const std::string& filepath)
     {
         loadFromFile(filepath);
     }
-
-
 
     bool Config::loadFromFile(const std::string& filepath) {
         std::ifstream file(filepath);
@@ -24,8 +20,6 @@ namespace engine::core {
             }
             return false; // 文件不存在，使用默认值
         }
-
-
 
         try {
             nlohmann::json j;
@@ -59,9 +53,6 @@ namespace engine::core {
         return false;
     }
 
-
-
-
     void Config::fromJson(const nlohmann::json& j) {
         if (j.contains("window")) {
             const auto& window_config = j["window"];
@@ -70,10 +61,6 @@ namespace engine::core {
             window_height_ = window_config.value("height", window_height_);
             window_resizable_ = window_config.value("resizable", window_resizable_);
         }
-
-
-
-
         if (j.contains("graphics")) {
             const auto& graphics_config = j["graphics"];
             vsync_enabled_ = graphics_config.value("vsync", vsync_enabled_);
@@ -86,15 +73,11 @@ namespace engine::core {
                 target_fps_ = 0;
             }
         }
-
-
-
         if (j.contains("audio")) {
             const auto& audio_config = j["audio"];
             music_volume_ = audio_config.value("music_volume", music_volume_);
             sound_volume_ = audio_config.value("sound_volume", sound_volume_);
         }
-
 
         // 从 JSON 加载 input_mappings
         if (j.contains("input_mappings") && j["input_mappings"].is_object()) {
@@ -111,14 +94,9 @@ namespace engine::core {
             }
         }
         else {
-
-
             spdlog::trace("配置跟踪：未找到 'input_mappings' 部分或不是对象。使用头文件中定义的默认映射。");
         }
     }
-
-
-
 
     nlohmann::ordered_json Config::toJson() const {
         return nlohmann::ordered_json{
@@ -142,4 +120,4 @@ namespace engine::core {
         };
     }
 
-} //namespace
+} // namespace engine::core 

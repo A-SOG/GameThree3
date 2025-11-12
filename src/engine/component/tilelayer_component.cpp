@@ -36,20 +36,17 @@ namespace engine::component {
             for (int x = 0; x < map_size_.x; ++x) {
                 size_t index = static_cast<size_t>(y) * map_size_.x + x;
                 // 检查索引有效性以及瓦片是否需要渲染
-
                 if (index < tiles_.size() && tiles_[index].type != TileType::EMPTY) {
                     const auto& tile_info = tiles_[index];
-                    // 计算该瓦片在世界中的左上角位置 
-
+                    // 计算该瓦片在世界中的左上角位置 (drawSprite 预期接收左上角坐标)
                     glm::vec2 tile_left_top_pos = {
                         offset_.x + static_cast<float>(x) * tile_size_.x,
                         offset_.y + static_cast<float>(y) * tile_size_.y
                     };
-                    // 但如果图片的大小与瓦片的大小不一致，需要调整 y 坐标 
+                    // 但如果图片的大小与瓦片的大小不一致，需要调整 y 坐标 (瓦片层的对齐点是左下角)
                     if (static_cast<int>(tile_info.sprite.getSourceRect()->h) != tile_size_.y) {
                         tile_left_top_pos.y -= (tile_info.sprite.getSourceRect()->h - static_cast<float>(tile_size_.y));
                     }
-
                     // 执行绘制
                     context.getRenderer().drawSprite(context.getCamera(), tile_info.sprite, tile_left_top_pos);
                 }
@@ -85,4 +82,4 @@ namespace engine::component {
         return getTileTypeAt(glm::ivec2{ tile_x, tile_y });
     }
 
-} // namespace
+} // namespace engine::component

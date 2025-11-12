@@ -1,13 +1,10 @@
 #include "camera.h"
 #include "../utils/math.h"
 #include <spdlog/spdlog.h>
-#include "../render/renderer.h"
-#include "../render/camera.h"
+
 namespace engine::render {
 
-    Camera::Camera(const glm::vec2& viewport_size,
-        const glm::vec2& position, 
-        const std::optional<engine::utils::Rect> limit_bounds)
+    Camera::Camera(const glm::vec2& viewport_size, const glm::vec2& position, const std::optional<engine::utils::Rect> limit_bounds)
         : viewport_size_(viewport_size), position_(position), limit_bounds_(limit_bounds) {
         spdlog::trace("Camera 初始化成功，位置: {},{}", position_.x, position_.y);
     }

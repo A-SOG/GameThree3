@@ -162,8 +162,21 @@
   <ItemGroup>
     <None Include=".gitattributes" />
     <None Include=".gitignore" />
-    <None Include="SDL3_mixer.dll" />
     <None Include="assets\config.json" />
     <None Include="assets\json_example.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\fonts\textures\Actors\eagle-attack.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\fonts\textures\Actors\foxy.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\fonts\textures\Actors\frog.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="assets\fonts\textures\Actors\opossum.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

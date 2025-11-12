@@ -4,31 +4,24 @@
 #include <string>       // 用于 std::string
 #include <unordered_map> // 用于 std::unordered_map
 
-#include <SDL_mixer.h> // SDL_mixer 主头文件
-
+#include <SDL_mixer.h>// SDL_mixer 主头文件
 
 namespace engine::resource {
 
-
-    //管理 SDL_mixer 音效 (Mix_Chunk) 和音乐 (Mix_Music)。
-
-     // 提供音频资源的加载和缓存功能。构造失败时会抛出异常。
-       // 仅供 ResourceManager 内部使用。
-
+    /**
+     * @brief 管理 SDL_mixer 音效 (Mix_Chunk) 和音乐 (Mix_Music)。
+     *
+     * 提供音频资源的加载和缓存功能。构造失败时会抛出异常。
+     * 仅供 ResourceManager 内部使用。
+     */
     class AudioManager final {
-
-
         friend class ResourceManager;
 
-
     private:
-        //Mix_chunk 自定义删除器
-
+        // Mix_Chunk 的自定义删除器
         struct SDLMixChunkDeleter {
-            void operator()(Mix_Chunk* chunk)const {
-
-                if (chunk)
-                {
+            void operator()(Mix_Chunk* chunk) const {
+                if (chunk) {
                     Mix_FreeChunk(chunk);
                 }
             }
@@ -42,44 +35,40 @@ namespace engine::resource {
                 }
             }
         };
-        // 音效存储 (文件路径 -> Mix_Chunk)
-        std::unordered_map<std::string,
-            std::unique_ptr<Mix_Chunk, SDLMixChunkDeleter>> sounds_;
-        // 音乐存储 (文件路径 -> Mix_Music)
-        std::unordered_map<std::string,
-            std::unique_ptr<Mix_Music, SDLMixMusicDeleter>> music_;
 
+        // 音效存储 (文件路径 -> Mix_Chunk)
+        std::unordered_map<std::string, std::unique_ptr<Mix_Chunk, SDLMixChunkDeleter>> sounds_;
+        // 音乐存储 (文件路径 -> Mix_Music)
+        std::unordered_map<std::string, std::unique_ptr<Mix_Music, SDLMixMusicDeleter>> music_;
 
     public:
-        //构造函数初始化SDL_mixer打开音频设备
-        //std::runtime_error
-
+        /**
+         * @brief 构造函数。初始化 SDL_mixer 并打开音频设备。
+         * @throws std::runtime_error 如果 SDL_mixer 初始化或打开音频设备失败。
+         */
         AudioManager();
-        ~AudioManager();
 
+        ~AudioManager();            ///< @brief 需要手动添加析构函数，清理资源并关闭 SDL_mixer。
 
-        //依旧放置所有权改变，不需要拷贝构造，移动相关构造，复制云闪付
-
+        // 当前设计中，我们只需要一个AudioManager，所有权不变，所以不需要拷贝、移动相关构造及赋值运算符
         AudioManager(const AudioManager&) = delete;
         AudioManager& operator=(const AudioManager&) = delete;
         AudioManager(AudioManager&&) = delete;
         AudioManager& operator=(AudioManager&&) = delete;
 
+    private:  // 仅供 ResourceManager 访问的方法
 
-    private:
+        Mix_Chunk* loadSound(const std::string& file_path);     ///< @brief 从文件路径加载音效
+        Mix_Chunk* getSound(const std::string& file_path);      ///< @brief 尝试获取已加载音效的指针，如果未加载则尝试加载
+        void unloadSound(const std::string& file_path);         ///< @brief 卸载指定的音效资源
+        void clearSounds();                                      ///< @brief 清空所有音效资源
 
-        //chunk
-        Mix_Chunk* loadSound(const std::string& file_path);
-        Mix_Chunk* getSound(const std::string& file_path);
-        void unloadSound(const std::string& file_path);
-        void clearSounds();
+        Mix_Music* loadMusic(const std::string& file_path);     ///< @brief 从文件路径加载音乐
+        Mix_Music* getMusic(const std::string& file_path);      ///< @brief 尝试获取已加载音乐的指针，如果未加载则尝试加载
+        void unloadMusic(const std::string& file_path);         ///< @brief 卸载指定的音乐资源
+        void clearMusic();                                      ///< @brief 清空所有音乐资源
 
-        //miusic
-        Mix_Music* loadMusic(const std::string& file_path);
-        Mix_Music* getMusic(const std::string& file_path);
-        void unloadMusic(const std::string& file_path);
-        void clearMusic();
-
-        void clearAudio();//清除所有
+        void clearAudio();                                      ///< @brief 清空所有音频资源
     };
-}//namespace
+
+} // namespace

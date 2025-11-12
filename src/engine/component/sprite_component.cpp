@@ -1,4 +1,4 @@
-﻿#include "sprite_component.h"
+#include "sprite_component.h"
 #include "transform_component.h"
 #include "../object/game_object.h"
 #include "../core/context.h"
@@ -25,6 +25,19 @@ namespace engine::component {
         }
         // offset_ 和 sprite_size_ 将在 init 中计算
         spdlog::trace("创建 SpriteComponent，纹理ID: {}", texture_id);
+    }
+
+    SpriteComponent::SpriteComponent(engine::render::Sprite& sprite, 
+        engine::resource::ResourceManager& resource_manager, 
+        engine::utils::Alignment alignment):resource_manager_(&resource_manager),
+        sprite_(std::move(sprite)),
+        alignment_(alignment)
+    {
+        if (!resource_manager_)
+        {
+            spdlog::critical("创建 SpriteComponent 时 ResourceManager 为空！，此组件将无效。");
+        }
+        spdlog::trace("创建 SpriteComponent，纹理ID: {}", sprite_.getTextureId());
     }
 
     void SpriteComponent::init() {
@@ -117,4 +130,4 @@ namespace engine::component {
         }
     }
 
-} // namespace
+} // namespace engine::component 

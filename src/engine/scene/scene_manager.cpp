@@ -12,33 +12,27 @@ namespace engine::scene {
 
     SceneManager::~SceneManager() {
         spdlog::trace("场景管理器已销毁。");
-
-        close(); 
-        // 即使不手动调用 close 也能确保清理
+        close(); // 即使不手动调用 close 也能确保清理
     }
 
     Scene* SceneManager::getCurrentScene() const {
         if (scene_stack_.empty()) {
             return nullptr;
         }
-        return scene_stack_.back().get(); 
-       // 返回栈顶场景的裸指针
+        return scene_stack_.back().get(); // 返回栈顶场景的裸指针
     }
 
-    void SceneManager::update(float delta_time)
-    {
+    void SceneManager::update(float delta_time) {
         // 只更新栈顶（当前）场景
         Scene* current_scene = getCurrentScene();
         if (current_scene) {
             current_scene->update(delta_time);
         }
-
         // 执行可能的切换场景操作
         processPendingActions();
     }
 
     void SceneManager::render() {
-
         // 渲染时需要叠加渲染所有场景，而不只是栈顶
         for (const auto& scene : scene_stack_) {
             if (scene) {
@@ -48,7 +42,6 @@ namespace engine::scene {
     }
 
     void SceneManager::handleInput() {
-
         // 只考虑栈顶场景
         Scene* current_scene = getCurrentScene();
         if (current_scene) {
@@ -57,9 +50,7 @@ namespace engine::scene {
     }
 
     void SceneManager::close() {
-
         spdlog::trace("正在关闭场景管理器并清理场景栈...");
-
         // 清理栈中所有剩余的场景（从顶到底）
         while (!scene_stack_.empty()) {
             if (scene_stack_.back()) {
@@ -86,6 +77,8 @@ namespace engine::scene {
         pending_action_ = PendingAction::Push;
         pending_scene_ = std::move(scene);
     }
+
+    // --- Private Methods ---
 
     void SceneManager::processPendingActions()
     {
@@ -164,4 +157,4 @@ namespace engine::scene {
         scene_stack_.push_back(std::move(scene));
     }
 
-} // namespace
+} // namespace engine::scene

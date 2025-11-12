@@ -206,7 +206,12 @@
     <None Include=".gitignore" />
     <None Include="assets\config.json" />
     <None Include="assets\json_example.json" />
-    <None Include="SDL3_mixer.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\fonts\textures\Actors\eagle-attack.png" />
+    <Image Include="assets\fonts\textures\Actors\foxy.png" />
+    <Image Include="assets\fonts\textures\Actors\frog.png" />
+    <Image Include="assets\fonts\textures\Actors\opossum.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -30,4 +30,4 @@ namespace game::scene {
         void testCamera();
     };
 
-} // namespace game::scene
+} // namespace 

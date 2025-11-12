@@ -1,6 +1,7 @@
 #include "transform_component.h"
 #include "../object/game_object.h"
 #include "sprite_component.h" 
+
 namespace engine::component {
 
     void TransformComponent::setScale(const glm::vec2& scale)
@@ -14,4 +15,4 @@ namespace engine::component {
         }
     }
 
-} // namespace
+} // namespace engine::component 

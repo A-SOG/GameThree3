@@ -12,7 +12,7 @@ namespace engine::scene {
     class Scene;
 
     /**
-    负责从 Tiled JSON 文件 (.tmj) 加载关卡数据到 Scene 中。
+     * @brief 负责从 Tiled JSON 文件 (.tmj) 加载关卡数据到 Scene 中。
      */
     class LevelLoader final {
         std::string map_path_;      ///< @brief 地图路径（拼接路径时需要）
@@ -23,11 +23,11 @@ namespace engine::scene {
     public:
         LevelLoader() = default;
 
-        /*
-         加载关卡数据到指定的 Scene 对象中。
-         map_path Tiled JSON 地图文件的路径。
-         scene 要加载数据的目标 Scene 对象。
-          bool 是否加载成功。
+        /**
+         * @brief 加载关卡数据到指定的 Scene 对象中。
+         * @param map_path Tiled JSON 地图文件的路径。
+         * @param scene 要加载数据的目标 Scene 对象。
+         * @return bool 是否加载成功。
          */
         bool loadLevel(const std::string& map_path, Scene& scene);
 
@@ -37,21 +37,21 @@ namespace engine::scene {
         void loadObjectLayer(const nlohmann::json& layer_json, Scene& scene);   ///< @brief 加载对象图层
 
         /**
-        根据全局 ID 获取瓦片信息。
-         gid 全局 ID。
-         engine::component::TileInfo 瓦片信息。
+         * @brief 根据全局 ID 获取瓦片信息。
+         * @param gid 全局 ID。
+         * @return engine::component::TileInfo 瓦片信息。
          */
         engine::component::TileInfo getTileInfoByGid(int gid);
 
-        /*
-        加载 Tiled tileset 文件 (.tsj)。
-         tileset_path Tileset 文件路径。
-         first_gid 此 tileset 的第一个全局 ID。
+        /**
+         * @brief 加载 Tiled tileset 文件 (.tsj)。
+         * @param tileset_path Tileset 文件路径。
+         * @param first_gid 此 tileset 的第一个全局 ID。
          */
         void loadTileset(const std::string& tileset_path, int first_gid);
 
-        /*
-        解析图片路径，合并地图路径和相对路径。例如：
+        /**
+         * @brief 解析图片路径，合并地图路径和相对路径。例如：
          * 1. 文件路径："assets/maps/level1.tmj"
          * 2. 相对路径："../textures/Layers/back.png"
          * 3. 最终路径："assets/textures/Layers/back.png"
@@ -62,4 +62,4 @@ namespace engine::scene {
         std::string resolvePath(const std::string& relative_path, const std::string& file_path);
     };
 
-} // namespace 
+} // namespace engine::scene

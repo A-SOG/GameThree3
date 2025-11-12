@@ -4,8 +4,9 @@
 
 namespace engine::resource {
 
+    // 构造函数：初始化SDL_mixer
     AudioManager::AudioManager() {
-        
+        // 使用所需的格式初始化SDL_mixer（推荐OGG、MP3）
         MIX_InitFlags flags = MIX_INIT_OGG | MIX_INIT_MP3;
         if ((Mix_Init(flags) & flags) != flags) {
             throw std::runtime_error("AudioManager 错误: Mix_Init 失败: " + std::string(SDL_GetError()));
@@ -13,7 +14,7 @@ namespace engine::resource {
 
         // SDL3打开音频设备的方法。默认值：44100 Hz，默认格式，2声道（立体声），2048采样块大小
         if (!Mix_OpenAudio(0, nullptr)) {
-            Mix_Quit(); 
+            Mix_Quit(); // 如果OpenAudio失败，先清理Mix_Init，再抛出异常
             throw std::runtime_error("AudioManager 错误: Mix_OpenAudio 失败: " + std::string(SDL_GetError()));
         }
         spdlog::trace("AudioManager 构造成功。");
@@ -25,7 +26,7 @@ namespace engine::resource {
         Mix_HaltChannel(-1); // 停止所有音效
         Mix_HaltMusic();     // 停止音乐
 
-        // 清理资源映射,unique_ptrs会调用删除器
+        // 清理资源映射（unique_ptrs会调用删除器）
         clearSounds();
         clearMusic();
 
@@ -37,15 +38,15 @@ namespace engine::resource {
         spdlog::trace("AudioManager 析构成功。");
     }
 
-    // 音效管理 
+    // --- 音效管理 ---
     Mix_Chunk* AudioManager::loadSound(const std::string& file_path) {
-       
+        // 首先检查缓存
         auto it = sounds_.find(file_path);
         if (it != sounds_.end()) {
             return it->second.get();
         }
 
-        //加载音效
+        // 加载音效块
         spdlog::debug("加载音效: {}", file_path);
         Mix_Chunk* raw_chunk = Mix_LoadWAV(file_path.c_str());
         if (!raw_chunk) {
@@ -54,8 +55,7 @@ namespace engine::resource {
         }
 
         // 使用unique_ptr存储在缓存中
-        sounds_.emplace(file_path,
-            std::unique_ptr<Mix_Chunk, SDLMixChunkDeleter>(raw_chunk));
+        sounds_.emplace(file_path, std::unique_ptr<Mix_Chunk, SDLMixChunkDeleter>(raw_chunk));
         spdlog::debug("成功加载并缓存音效: {}", file_path);
         return raw_chunk;
     }
@@ -87,10 +87,10 @@ namespace engine::resource {
         }
     }
 
-    // 音乐管理 
+    // --- 音乐管理 ---
     Mix_Music* AudioManager::loadMusic(const std::string& file_path) {
-       
-        auto it = music_.find(file_path);//查看是否有这个音频
+        // 首先检查缓存
+        auto it = music_.find(file_path);
         if (it != music_.end()) {
             return it->second.get();
         }
@@ -104,8 +104,7 @@ namespace engine::resource {
         }
 
         // 使用unique_ptr存储在缓存中
-        music_.emplace(file_path,
-            std::unique_ptr<Mix_Music, SDLMixMusicDeleter>(raw_music));
+        music_.emplace(file_path, std::unique_ptr<Mix_Music, SDLMixMusicDeleter>(raw_music));
         spdlog::debug("成功加载并缓存音乐: {}", file_path);
         return raw_music;
     }
@@ -143,4 +142,4 @@ namespace engine::resource {
         clearMusic();
     }
 
-} // namespace 
+} // namespace engine::resource
