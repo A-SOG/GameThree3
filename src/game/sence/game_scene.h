@@ -25,9 +25,12 @@ namespace game::scene {
         void clean() override;
 
     private:
+        engine::object::GameObject* test_object_ = nullptr;
         // 测试函数
         void createTestObject();
         void testCamera();
+        void TestObject();
+        void TestCollisionPairs();
     };
 
 } // namespace 

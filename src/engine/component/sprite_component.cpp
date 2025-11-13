@@ -27,7 +27,7 @@ namespace engine::component {
         spdlog::trace("创建 SpriteComponent，纹理ID: {}", texture_id);
     }
 
-    SpriteComponent::SpriteComponent(engine::render::Sprite& sprite, 
+    SpriteComponent::SpriteComponent(engine::render::Sprite&& sprite, 
         engine::resource::ResourceManager& resource_manager, 
         engine::utils::Alignment alignment):resource_manager_(&resource_manager),
         sprite_(std::move(sprite)),
