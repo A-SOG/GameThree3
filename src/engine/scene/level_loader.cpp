@@ -244,7 +244,8 @@ namespace engine::scene {
                 static_cast<float>(tile_size_.y)
             };
             engine::render::Sprite sprite{ texture_id, texture_rect };
-            return engine::component::TileInfo(sprite, engine::component::TileType::NORMAL);    // 目前只完成渲染，以后再考虑瓦片类型
+            auto tile_type = getTileTypeById(tileset, local_id);   // 获取瓦片类型（只有瓦片id，还没找具体瓦片json）
+            return engine::component::TileInfo(sprite, tile_type);
         }
         else {   // 这是多图片的情况
             if (!tileset.contains("tiles")) {   // 没有tiles字段的话不符合数据格式要求，直接返回空的瓦片信息
@@ -275,7 +276,8 @@ namespace engine::scene {
                         static_cast<float>(tile_json.value("height", image_height))
                     };
                     engine::render::Sprite sprite{ texture_id, texture_rect };
-                    return engine::component::TileInfo(sprite, engine::component::TileType::NORMAL);    // 目前只完成渲染，以后再考虑瓦片类型
+                    auto tile_type = getTileType(tile_json);    // 获取瓦片类型（已经有具体瓦片json了）
+                    return engine::component::TileInfo(sprite, tile_type);
                 }
             }
         }
@@ -303,6 +305,38 @@ namespace engine::scene {
         ts_json["file_path"] = tileset_path;    // 将文件路径存储到json中，后续解析图片路径时需要
         tileset_data_[first_gid] = std::move(ts_json);
         spdlog::info("Tileset 文件 '{}' 加载完成，firstgid: {}", tileset_path, first_gid);
+    }
+
+    engine::component::TileType LevelLoader::getTileType(const nlohmann::json& tile_json)
+    {
+
+        if (tile_json.contains("properties")) {
+
+            auto& properties = tile_json["properties"];
+
+            for (auto& property : properties) {
+
+                if (property.contains("name") && property["name"] == "solid") {
+                    auto is_solid = property.value("value", false);
+                    return is_solid ? engine::component::TileType::SOLID : engine::component::TileType::NORMAL;
+                }
+                
+            }
+        }
+        return engine::component::TileType::NORMAL;
+    }
+
+    engine::component::TileType LevelLoader::getTileTypeById(const nlohmann::json& tileset_json, int local_id)
+    {
+        if (tileset_json.contains("tiles")) {
+            auto& tiles = tileset_json["tiles"];
+            for (auto& tile : tiles) {
+                if (tile.contains("id") && tile["id"] == local_id) {
+                    return getTileType(tile);
+                }
+            }
+        }
+        return engine::component::TileType::NORMAL;
     }
 
     std::string LevelLoader::resolvePath(const std::string& relative_path, const std::string& file_path)

@@ -3,9 +3,11 @@
 #include <glm/vec2.hpp>
 #include <nlohmann/json.hpp>
 #include <map>
+#include<optional>
 
 namespace engine::component {
     struct TileInfo;
+    enum class TileType;
 }
 
 namespace engine::scene {
@@ -31,6 +33,8 @@ namespace engine::scene {
          */
         bool loadLevel(const std::string& map_path, Scene& scene);
 
+
+
     private:
         void loadImageLayer(const nlohmann::json& layer_json, Scene& scene);    ///< @brief 加载图片图层
         void loadTileLayer(const nlohmann::json& layer_json, Scene& scene);     ///< @brief 加载瓦片图层
@@ -49,6 +53,24 @@ namespace engine::scene {
          * @param first_gid 此 tileset 的第一个全局 ID。
          */
         void loadTileset(const std::string& tileset_path, int first_gid);
+
+
+        /**
+        * @brief 根据瓦片json对象获取瓦片类型
+        * @param tile_json 瓦片json数据
+        * @return 瓦片类型
+        */
+        engine::component::TileType getTileType(const nlohmann::json& tile_json);
+
+        /**
+         * @brief 根据（单一图片）图块集中的id获取瓦片类型
+         * @param tileset_json 图块集json数据
+         * @param local_id 图块集中的id
+         * @return 瓦片类型
+         */
+        engine::component::TileType getTileTypeById(const nlohmann::json& tileset_json, int local_id);
+
+
 
         /**
          * @brief 解析图片路径，合并地图路径和相对路径。例如：
