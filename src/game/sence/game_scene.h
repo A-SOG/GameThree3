@@ -14,6 +14,7 @@ namespace game::scene {
      */
     class GameScene final : public engine::scene::Scene {
 
+        engine::object::GameObject* player_ = nullptr;//保存玩家对象的指针，方便访问
     public:
         GameScene(std::string name, engine::core::Context& context, engine::scene::SceneManager& scene_manager);
 
@@ -25,11 +26,9 @@ namespace game::scene {
         void clean() override;
 
     private:
-        engine::object::GameObject* test_object_ = nullptr;
-        // 测试函数
-        void createTestObject();
+       
         void testCamera();
-        void TestObject();
+        void TestPlayer();
         void TestCollisionPairs();
     };
 

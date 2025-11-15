@@ -59,7 +59,7 @@ namespace engine::component {
 
         void updateOffset();
 
-        const TransformComponent* getTransform() const { return transform_; }
+        TransformComponent* getTransform() const { return transform_; }
         const engine::physics::Collider* getCollider() const { return collider_.get(); }
         const glm::vec2& getOffset() const { return offset_; }
 
