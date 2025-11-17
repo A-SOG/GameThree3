@@ -200,6 +200,8 @@ namespace engine::scene {
                 game_object->addComponent<engine::component::TransformComponent>(position, scale, rotation);
                 game_object->addComponent<engine::component::SpriteComponent>(std::move(tile_info.sprite), scene.getContext().getResourceManager());
 
+
+
                 // 获取瓦片json信息    
                 //  1. 必然存在，因为getTileInfoByGid(gid)函数已经顺利执行
                 // 2. 这里再获取json，实际上检索了两次，未来可以优化
@@ -227,7 +229,8 @@ namespace engine::scene {
                     if (auto rect = getColliderRect(tile_json);rect)
                     {
                         auto collider = std::make_unique<engine::physics::AABBCollider>(rect->size);
-                        auto *cc = game_object->addComponent<engine::component::ColliderComponent>(collider);
+                      
+                        auto *cc = game_object->addComponent<engine::component::ColliderComponent>(std::move(collider));
                         cc->setOffset(rect->position);
                         // 自定义碰撞盒的坐标是相对于图片坐标，也就是针对Transform的偏移量
 
@@ -243,8 +246,9 @@ namespace engine::scene {
 
                     game_object->setTag(tag.value());
                 }
+
                 // 获取重力信息并设置
-                auto gravity = getTileProperty<bool>(tile_json, "gravity");
+                auto gravity= getTileProperty<bool>(tile_json, "gravity");
                 if (gravity) {
                     auto pc = game_object->getComponent<engine::component::PhysicsComponent>();
                     if (pc) {
@@ -430,6 +434,37 @@ namespace engine::scene {
                     auto is_solid = property.value("value", false);
                     return is_solid ? engine::component::TileType::SOLID : engine::component::TileType::NORMAL;
                 }
+                else
+                    if(property.contains("name") && property["name"] == "slope")
+                    {
+                        auto slope_type = property.value("value", "");
+                        if (slope_type == "0_1") {
+                            return engine::component::TileType::SLOPE_0_1;
+                        }
+                        else if (slope_type == "1_0") {
+                            return engine::component::TileType::SLOPE_1_0;
+                        }
+                        else if (slope_type == "0_2") {
+                            return engine::component::TileType::SLOPE_0_2;
+                        }
+                        else if (slope_type == "2_0") {
+                            return engine::component::TileType::SLOPE_2_0;
+                        }
+                        else if (slope_type == "2_1") {
+                            return engine::component::TileType::SLOPE_2_1;
+                        }
+                        else if (slope_type == "1_2") {
+                            return engine::component::TileType::SLOPE_1_2;
+                        }
+                        else {
+                            spdlog::error("未知的斜坡类型: {}", slope_type);
+                            return engine::component::TileType::NORMAL;
+                        }
+                    }
+                    else if (property.contains("name") && property["name"] == "unisolid") {
+                        auto is_unisolid = property.value("value", false);
+                        return is_unisolid ? engine::component::TileType::UNISOLID : engine::component::TileType::NORMAL;
+                    }
                 
             }
         }

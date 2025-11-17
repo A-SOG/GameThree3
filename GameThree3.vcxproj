@@ -177,6 +177,12 @@
     <ClCompile Include="src\engine\scene\level_loader.cpp" />
     <ClCompile Include="src\engine\scene\scene.cpp" />
     <ClCompile Include="src\engine\scene\scene_manager.cpp" />
+    <ClCompile Include="src\game\component\player_component.cpp" />
+    <ClCompile Include="src\game\component\state\fall_state.cpp" />
+    <ClCompile Include="src\game\component\state\idle_state.cpp" />
+    <ClCompile Include="src\game\component\state\jump_state.cpp" />
+    <ClCompile Include="src\game\component\state\player_state.cpp" />
+    <ClCompile Include="src\game\component\state\walk_state.cpp" />
     <ClCompile Include="src\game\sence\game_scene.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
@@ -206,6 +212,12 @@
     <ClInclude Include="src\engine\scene\level_loader.h" />
     <ClInclude Include="src\engine\utils\alignment.h" />
     <ClInclude Include="src\engine\utils\math.h" />
+    <ClInclude Include="src\game\component\player_component.h" />
+    <ClInclude Include="src\game\component\state\fall_state.h" />
+    <ClInclude Include="src\game\component\state\idle_state.h" />
+    <ClInclude Include="src\game\component\state\jump_state.h" />
+    <ClInclude Include="src\game\component\state\player_state.h" />
+    <ClInclude Include="src\game\component\state\walk_state.h" />
     <ClInclude Include="src\game\sence\game_scene.h" />
     <ClInclude Include="src\engine\scene\scene.h" />
     <ClInclude Include="src\engine\scene\scene_manager.h" />

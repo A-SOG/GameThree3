@@ -43,6 +43,11 @@ namespace engine::component {
 		bool enabled_ = true;
 		//组件是否激活
 
+		//碰撞标志
+		bool collided_below_ = false;
+		bool collided_above_ = false;
+		bool collided_left_ = false;
+		bool collided_right_ = false;
 
 	public:
 		/**
@@ -75,7 +80,8 @@ namespace engine::component {
 		{
 			force_ = { 0.0f,0.0f };//清除力
 		}
-
+		  void addForce(const glm::vec2& force) { if (enabled_) force_ += force; }    ///< @brief 添加力
+        void clearForce() { force_ = { 0.0f, 0.0f }; }    
 		const glm::vec2& getForce()const { return force_; } //获取当前力
 		float getMass() const { return mass_; }   //  获取质量
 		bool isEnabled() const { return enabled_; }  //获取组件是否启用
@@ -93,14 +99,36 @@ namespace engine::component {
 			mass_ = (mass >= 0.0f) ? mass : 1.0f;//设置质量，质量不能为负
 		}
 
-		void setUseGravity(bool use_gravity) { use_gravity = use_gravity_; //设置组件是否受重力影响
+		void setUseGravity(bool use_gravity) 
+		{ use_gravity_ = use_gravity; //设置组件是否受重力影响
 		}
 
 		void setVelocity(const glm::vec2& velocity) { velocity_ = velocity; }
 
 		const glm::vec2& getVelocity() const { return velocity_; }  
 		TransformComponent* getTransform() const { return transform_; }//获取TransformComponent指针
- private:
+ 
+		// --- 碰撞状态访问与修改 (供 PhysicsEngine 使用) ---
+		  /** @brief 重置所有碰撞标志 (在物理更新开始时调用) */
+		
+		void resetCollisionFlags() {
+			collided_below_ = false;
+			collided_above_ = false;
+			collided_left_ = false;
+			collided_right_ = false;
+	}
+	
+		void setCollidedBelow(bool collided) { collided_below_ = collided; }//下
+		void setCollidedAbove(bool collided) { collided_above_ = collided; }//上
+		void setCollidedLeft(bool collided) { collided_left_ = collided; }//左
+		void setCollidedRight(bool collided) { collided_right_ = collided; }//右
+
+
+		bool hasCollidedBelow()const { return collided_below_; }
+		bool hasCollidedAbove()const { return collided_above_; }
+		bool hasCollidedLeft()const { return collided_left_; }
+		bool hasCollidedRight()const { return collided_right_; }
+	private:
         // 核心循环方法
         void init() override;
         void update(float, engine::core::Context&) override {}

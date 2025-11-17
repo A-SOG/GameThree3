@@ -38,7 +38,7 @@ namespace engine::core {
             update(delta_time);
             render();
 
-            // spdlog::info("delta_time: {}", delta_time);
+         
         }
 
         close();

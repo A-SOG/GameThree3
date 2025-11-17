@@ -1,5 +1,6 @@
 #include "camera.h"
 #include "../utils/math.h"
+#include"../component/transform_component.h"
 #include <spdlog/spdlog.h>
 
 namespace engine::render {
@@ -14,9 +15,29 @@ namespace engine::render {
         clampPosition();
     }
 
-    void Camera::update(float /* delta_time */)
+    void Camera::update(float delta_time )
     {
-        // TODO 自动跟随目标
+        if (target_ == nullptr)return;
+        glm::vec2 target_pos = target_->getPosition();
+        glm::vec2 disired_position = target_pos - viewport_size_ / 2.0f;
+        //计算目标位置 
+
+         // 计算当前位置与目标位置的距离
+        auto distance_ = glm::distance(position_, disired_position);
+
+        constexpr float SNAP_THRESHOLD = 1.0f;// 设置一个距离阈值 
+
+        if (distance_ < SNAP_THRESHOLD)
+        { // 如果距离小于阈值，直接吸附到目标位置
+            position_ = disired_position;
+
+        }
+        else
+        {//否则，使用线性插值平滑移动
+            position_ = glm::mix(position_, disired_position, smooth_speed_ * delta_time);
+            position_ = glm::vec2(glm::round(position_.x), glm::round(position_.y));
+        }
+        clampPosition();
     }
 
     void Camera::move(const glm::vec2& offset)
@@ -29,6 +50,11 @@ namespace engine::render {
     {
         limit_bounds_ = bounds;
         clampPosition(); // 设置边界后，立即应用限制
+    }
+
+    void Camera::setTarget(engine::component::TransformComponent* target)
+    {
+        target_ = target;
     }
 
     const glm::vec2& Camera::getPosition() const {
@@ -71,6 +97,11 @@ namespace engine::render {
 
     glm::vec2 Camera::getViewportSize() const {
         return viewport_size_;
+    }
+
+    engine::component::TransformComponent* Camera::getTarget() const
+    {
+        return target_;
     }
 
     std::optional<engine::utils::Rect> Camera::getLimitBounds() const {

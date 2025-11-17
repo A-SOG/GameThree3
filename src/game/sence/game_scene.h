@@ -26,10 +26,8 @@ namespace game::scene {
         void clean() override;
 
     private:
-       
-        void testCamera();
-        void TestPlayer();
-        void TestCollisionPairs();
+        [[nodiscard]] bool initLevel();//关卡
+        [[nodiscard]] bool initPlayer();//玩家
     };
 
 } // namespace 
