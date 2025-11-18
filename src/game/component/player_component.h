@@ -45,7 +45,7 @@ namespace game::component {
 		float move_force_ = 200.0f;//水平移动力
 		float max_speed_ = 120.0f;//最大移动速度 (像素/秒)
 		float friction_factor_ = 0.85f;//摩擦系数
-		float jump_force_ = 350.0f;//跳跃力 
+		float jump_vel_ = 350.0f;//跳跃力 
 
 		float stunned_duration_ = 4.0f;///< @brief 玩家被击中后的硬直时间（单位：秒）
 
@@ -79,8 +79,8 @@ namespace game::component {
 		void setFrictionFactor(float friction_factor) { friction_factor_ = friction_factor; }
 		float getFrictionFactor() const { return friction_factor_; }//摩擦系数
 		
-		void setJumpForce(float jump_force) { jump_force_ = jump_force; }
-		float getJumpForce() const { return jump_force_; }//跳跃
+		void setJumpVelocity(float jump_vel) { jump_vel_ = jump_vel; }
+		float getJumpVelocity() const { return jump_vel_; }//跳跃
 		void setStunnedDuration(float duration) { stunned_duration_ = duration; }  ///< @brief 设置硬直时间
 		float getStunnedDuration() const { return stunned_duration_; }
 		

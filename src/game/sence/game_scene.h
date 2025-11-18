@@ -1,6 +1,7 @@
 #pragma once
 #include "../../engine/scene/scene.h"
 #include <memory>
+#include<glm/vec2.hpp>
 
 // 前置声明
 namespace engine::object {
@@ -30,8 +31,18 @@ namespace game::scene {
         [[nodiscard]] bool initPlayer();//玩家
         [[nodiscard]] bool  initEnemyAndItem();//敌人和道具
 
+        void handleObjectCollisions(); ///< @brief 处理游戏对象间的碰撞逻辑
+        void handleTileTriggers();
+        void PlayerVSEnemyCollision(engine::object::GameObject* player, engine::object::GameObject* enemy);
+        void PlayerVSItemCollision(engine::object::GameObject* player, engine::object::GameObject* item);
 
-        void testHealth();
-    };
+        
+     /**
+         * @brief 创建一个特效对象（一次性）。
+         * @param center_pos 特效中心位置
+         * @param tag 特效标签（决定特效类型,例如"enemy","item"）
+         */
+    void createEffect(const glm::vec2& center_pos, const std::string& tag);
 
+};
 } // namespace 
