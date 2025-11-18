@@ -28,6 +28,10 @@ namespace game::scene {
     private:
         [[nodiscard]] bool initLevel();//关卡
         [[nodiscard]] bool initPlayer();//玩家
+        [[nodiscard]] bool  initEnemyAndItem();//敌人和道具
+
+
+        void testHealth();
     };
 
 } // namespace 

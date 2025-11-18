@@ -11,7 +11,9 @@
 namespace game::component::state {
 
 
-	void IdleState::enter() {}
+	void IdleState::enter() {
+        playAnimation("idle");//idle
+    }
 	void IdleState::exit() {}
 
     std::unique_ptr<PlayerState> IdleState::handleInput(engine::core::Context& context)

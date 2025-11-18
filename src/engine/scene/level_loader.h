@@ -7,6 +7,7 @@
 #include"../utils/math.h"
 
 namespace engine::component {
+    class AnimationComponent;
     struct TileInfo;
     enum class TileType;
 }
@@ -41,6 +42,21 @@ namespace engine::scene {
         void loadTileLayer(const nlohmann::json& layer_json, Scene& scene);     ///< @brief 加载瓦片图层
         void loadObjectLayer(const nlohmann::json& layer_json, Scene& scene);   ///< @brief 加载对象图层
 
+
+
+
+        /**
+        * @brief 添加动画到指定的 AnimationComponent。
+        * @param anim_json 动画json数据（自定义）
+        * @param ac AnimationComponent 指针（动画添加到此组件）
+        * @param sprite_size 每一帧动画的尺寸
+        */
+
+        void addAnimation(const nlohmann::json& anim_json, 
+            engine::component::AnimationComponent* ac,
+            const glm::vec2& sprite_size);
+
+
         /**
         * @brief 获取瓦片属性
         * @tparam T 属性类型
@@ -50,7 +66,8 @@ namespace engine::scene {
         */
 
         template<typename T>
-        std::optional<T>getTileProperty(const nlohmann::json& tile_json, const std::string& property_name)
+        std::optional<T>getTileProperty(const nlohmann::json& tile_json,
+            const std::string& property_name)
         {
             if (!tile_json.contains("properties"))return std::nullopt;
             const auto& properties = tile_json["properties"];

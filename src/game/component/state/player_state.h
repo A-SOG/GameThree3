@@ -33,6 +33,9 @@ public:
 	PlayerState& operator=(const PlayerState&) = delete;
 	PlayerState(PlayerState&&) = delete;
 	PlayerState& operator = (PlayerState&&) = delete;
+
+	void playAnimation(const std::string& animation_name);//播放指定名称的动画
+
 	protected:
 		// // 核心状态方法
 		virtual void enter() = 0;
