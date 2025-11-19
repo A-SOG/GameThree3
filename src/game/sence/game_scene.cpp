@@ -211,10 +211,10 @@ namespace game::scene {
     {
         const auto& tile_trigger_events = context_.getPhysicsEngine().getTileTriggerEvents();
         for (const auto& event : tile_trigger_events) {
-            auto* obj = event.first;        // 瓦片触发事件的对象
-            auto tile_type = event.second;  // 瓦片类型
+            auto* obj = event.first;      
+            auto tile_type = event.second;  
             if (tile_type == engine::component::TileType::HAZARD) {
-                // 玩家碰到到危险瓦片，受伤
+                // 玩家碰到到危险瓦片受伤
                 if (obj->getName() == "player") {
                     obj->getComponent<game::component::PlayerComponent>()->takeDamage(1);
                     spdlog::debug("玩家 {} 受到了 HAZARD 瓦片伤害", obj->getName());

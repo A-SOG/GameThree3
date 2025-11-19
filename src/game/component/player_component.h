@@ -46,6 +46,7 @@ namespace game::component {
 		float max_speed_ = 120.0f;//最大移动速度 (像素/秒)
 		float friction_factor_ = 0.85f;//摩擦系数
 		float jump_vel_ = 350.0f;//跳跃力 
+		float climb_speed_ = 100.0f; // 爬梯子速度
 
 		float stunned_duration_ = 4.0f;///< @brief 玩家被击中后的硬直时间（单位：秒）
 
@@ -76,6 +77,9 @@ namespace game::component {
 		void setMaxSpeed(float max_speed) { max_speed_ = max_speed; }
 		float getMaxSpeed() const { return max_speed_; }//玩家速度
 		
+		void setCilmbSpeed(float climb_speed) { climb_speed_ = climb_speed; }
+		float getClimbSpeed()const { return climb_speed_; }//梯子速度
+
 		void setFrictionFactor(float friction_factor) { friction_factor_ = friction_factor; }
 		float getFrictionFactor() const { return friction_factor_; }//摩擦系数
 		

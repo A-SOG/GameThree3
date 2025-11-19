@@ -48,6 +48,8 @@ namespace engine::component {
 		bool collided_above_ = false;
 		bool collided_left_ = false;
 		bool collided_right_ = false;
+		bool collided_ladder_ = false;
+		bool is_on_top_ladder_ = false;
 
 	public:
 		/**
@@ -116,18 +118,23 @@ namespace engine::component {
 			collided_above_ = false;
 			collided_left_ = false;
 			collided_right_ = false;
+			collided_ladder_ = false;
+			is_on_top_ladder_ = false;
 	}
 	
 		void setCollidedBelow(bool collided) { collided_below_ = collided; }//下
 		void setCollidedAbove(bool collided) { collided_above_ = collided; }//上
 		void setCollidedLeft(bool collided) { collided_left_ = collided; }//左
 		void setCollidedRight(bool collided) { collided_right_ = collided; }//右
-
+		void setCollidedLadder(bool collided) { collided_ladder_ = collided; }//梯子碰撞标志
+		void setOnTopLadder(bool on_top) { is_on_top_ladder_ = on_top; }//是否在梯子顶层
 
 		bool hasCollidedBelow()const { return collided_below_; }
 		bool hasCollidedAbove()const { return collided_above_; }
 		bool hasCollidedLeft()const { return collided_left_; }
 		bool hasCollidedRight()const { return collided_right_; }
+		bool hasCollidedLadder() const { return collided_ladder_; }
+		bool isOnTopLadder() const { return is_on_top_ladder_; }
 	private:
         // 核心循环方法
         void init() override;

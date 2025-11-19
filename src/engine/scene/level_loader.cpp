@@ -131,11 +131,11 @@ namespace engine::scene {
             spdlog::error("图层 '{}' 缺少 'data' 属性。", layer_json.value("name", "Unnamed"));
             return;
         }
-        // 准备 TileInfo Vector (瓦片数量 = 地图宽度 * 地图高度)
+        // TileInfo Vector (瓦片数量 = 地图宽度 * 地图高度)
         std::vector<engine::component::TileInfo> tiles;
         tiles.reserve(map_size_.x * map_size_.y);
 
-        // 获取图层数据 (瓦片 ID 列表)
+        // 获取图层数据
         const auto& data = layer_json["data"];
 
         // 根据gid获取必要信息，并依次填充 TileInfo Vector
@@ -163,13 +163,13 @@ namespace engine::scene {
         }
 
 
-        //获取对象数据
+       
         const auto& objects = layer_json["objects"];
         //遍历对象数据
         for (const auto& object : objects) {
             auto gid = object.value("gid", 0);
             if (gid == 0) {
-                //TODO
+                
             }
             else {
 
@@ -557,6 +557,13 @@ namespace engine::scene {
                             engine::component::TileType::NORMAL;
 
                     }
+                    else if (property.contains("name") && property["name"] == "ladder")
+                    {
+                        auto is_ladder = property.value("value", false);
+                        return is_ladder ? engine::component::TileType::LADDER :
+                            engine::component::TileType::NORMAL;
+                    }
+ 
             }
         }
         return engine::component::TileType::NORMAL;

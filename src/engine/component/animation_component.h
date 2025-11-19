@@ -22,14 +22,15 @@ namespace engine::component {
     class AnimationComponent : public Component {
         friend class engine::object::GameObject;
     private:
-        /// @brief 动画名称到Animation对象的映射。
-        std::unordered_map<std::string, std::unique_ptr<engine::render::Animation>> animations_;
-        SpriteComponent* sprite_component_ = nullptr;               ///< @brief 指向必需的SpriteComponent的指针
-        engine::render::Animation* current_animation_ = nullptr;    ///< @brief 指向当前播放动画的原始指针
 
-        float animation_timer_ = 0.0f;          ///< @brief 动画播放中的计时器
-        bool is_playing_ = false;               ///< @brief 当前是否有动画正在播放
-        bool is_one_shot_removal_ = false;      ///< @brief 是否在动画结束后删除整个GameObject
+        //动画名称到Animation对象的映射。
+        std::unordered_map<std::string, std::unique_ptr<engine::render::Animation>> animations_;
+        SpriteComponent* sprite_component_ = nullptr;             
+        engine::render::Animation* current_animation_ = nullptr;    
+
+        float animation_timer_ = 0.0f;   // 动画播放中的计时器
+        bool is_playing_ = false;       // 当前是否有动画正在播放
+        bool is_one_shot_removal_ = false;  //是否在动画结束后删除整个GameObject
 
     public:
         AnimationComponent() = default;
@@ -41,11 +42,12 @@ namespace engine::component {
         AnimationComponent(AnimationComponent&&) = delete;
         AnimationComponent& operator=(AnimationComponent&&) = delete;
 
-        void addAnimation(std::unique_ptr<engine::render::Animation> animation);    ///< @brief 向 animations_ map容器中添加一个动画。
-        void playAnimation(const std::string& name);    ///< @brief 播放指定名称的动画。
-        void stopAnimation() { is_playing_ = false; }   ///< @brief 停止当前动画播放。
+        void addAnimation(std::unique_ptr<engine::render::Animation> animation);  //添加动画
+        void playAnimation(const std::string& name);  // 播放指定名称的动画。
+        void stopAnimation() { is_playing_ = false; } //停止当前动画播放。
 
-        // --- Getters and Setters ---
+        void resumeAnimation() { is_playing_ = false; }// 恢复当前动画播放。
+
         std::string getCurrentAnimationName() const;
         bool isPlaying() const { return is_playing_; }
         bool isAnimationFinished() const;
@@ -58,4 +60,4 @@ namespace engine::component {
         void update(float, engine::core::Context&) override;
     };
 
-} // namespace engine::component
+} // namespace

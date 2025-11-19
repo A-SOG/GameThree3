@@ -219,11 +219,27 @@ namespace engine::physics {
 
                 if (tile_type_left == engine::component::TileType::SOLID || tile_type_right == engine::component::TileType::SOLID
                     ||tile_type_left == engine::component::TileType::UNISOLID || tile_type_right == engine::component::TileType::UNISOLID) {
-                    // 到达地面！速度归零，y方向移动到贴着地面的位置
+                    // 到达地面速度归零，y方向移动到贴着地面的位置
                     new_obj_pos.y = tile_y * layer->getTileSize().y - obj_size.y;
                     pc->velocity_.y = 0.0f;
                     pc->setCollidedBelow(true);
-                }
+                }else  // 如果两个角点都位于梯子上，则判断是不是处在梯子顶层
+                    if (tile_type_left == engine::component::TileType::LADDER && tile_type_right == engine::component::TileType::LADDER)
+                    {
+                        auto tile_type_up_l = layer->getTileTypeAt({ tile_x,tile_y - 1 });
+                        auto tile_type_up_r = layer->getTileTypeAt({ tile_x_right,tile_y - 1 });
+                        if (tile_type_up_r != engine::component::TileType::LADDER && tile_type_up_l != engine::component::TileType::LADDER)
+                        { // 通过是否使用重力来区分是否处于攀爬状态。
+                            if (pc->isUseGravity())
+                            {
+                                pc->setOnTopLadder(true);
+                                pc->setCollidedBelow(true);
+                                new_obj_pos.y = tile_y * layer->getTileSize().y - obj_size.y;
+                                pc->velocity_.y = 0.0f;
+                            }
+                            else {}
+                        }
+                    }
                 else {
                     auto width_left = obj_pos.x - tile_x * tile_size.x;
                    
@@ -282,7 +298,7 @@ namespace engine::physics {
         auto move_aabb = move_cc->getWorldAABB();
         auto solid_aabb = solid_cc->getWorldAABB();
 
-        // --- 使用最小平移向量解决碰撞问题 ---
+        // 使用最小平移向量解决碰撞问题
         auto move_center = move_aabb.position + move_aabb.size / 2.0f;
         auto solid_center = solid_aabb.position + solid_aabb.size / 2.0f;
         // 计算两个包围盒的重叠部分
@@ -310,7 +326,7 @@ namespace engine::physics {
                 }
             }
         }
-        else {                        // 重叠部分在y方向上更小，则认为碰撞发生在y方向上（推出y方向平移向量最小）
+        else {  // 重叠部分在y方向上更小，则认为碰撞发生在y方向上（推出y方向平移向量最小）
             if (move_center.y < solid_center.y) {
                 // 移动物体在上面，让它贴着下面SOLID物体（相当于向上移出重叠部分），x方向正常移动
                 move_tc->translate(glm::vec2(0.0f, -overlap.y));
@@ -363,7 +379,7 @@ namespace engine::physics {
     {
         for (auto* pc : components_)
         {
-            if (!pc || pc->isEnabled())continue;// 检查组件是否有效和启用
+            if (!pc || !pc->isEnabled())continue;// 检查组件是否有效和启用
 
             auto* obj = pc->getOwner();
             if (!obj)continue;
@@ -404,7 +420,10 @@ namespace engine::physics {
                             triggers_set.insert(tile_type);
 
                         }
-                    
+                        else if (tile_type == engine::component::TileType::LADDER)
+                        {
+                            pc->setCollidedLadder(true);
+                        }
 
                     }
                 }
