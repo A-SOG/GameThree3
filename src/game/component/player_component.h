@@ -43,12 +43,20 @@ namespace game::component {
 
 		//  移动相关参数
 		float move_force_ = 200.0f;//水平移动力
-		float max_speed_ = 120.0f;//最大移动速度 (像素/秒)
+		float max_speed_ = 120.0f;//最大移动速度 
 		float friction_factor_ = 0.85f;//摩擦系数
 		float jump_vel_ = 350.0f;//跳跃力 
 		float climb_speed_ = 100.0f; // 爬梯子速度
 
-		float stunned_duration_ = 4.0f;///< @brief 玩家被击中后的硬直时间（单位：秒）
+		float stunned_duration_ = 4.0f;// 玩家被击中后的硬直时间
+
+		static constexpr float coyote_time_ = 0.1f; // Coyote Time
+		float coyote_timer_ = 0.0f;// Coyote Time 计时器
+
+		// 无敌闪烁时间
+		static constexpr float flash_interval_ = 0.1f;  // 闪烁间隔时间
+		float flash_timer_ = 0.0f;                      // 闪烁计时器，用于无敌状态下的闪烁效果
+
 
 	public:
 		PlayerComponent() = default;
@@ -89,7 +97,7 @@ namespace game::component {
 		float getStunnedDuration() const { return stunned_duration_; }
 		
 		void setState(std::unique_ptr<state::PlayerState> new_state);//切换玩家状态
-
+		bool is_on_ground()const;//检查玩家是否在地面上(考虑了Coyote Time)
 
 	private:
 		// 核心循环函数

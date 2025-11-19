@@ -14,7 +14,7 @@
 #include "player_component.h"
 
 namespace game::component {
-	
+
 	void game::component::PlayerComponent::init()
 	{
 		if (!owner_)
@@ -29,7 +29,7 @@ namespace game::component {
 		animation_component_ = owner_->getComponent<engine::component::AnimationComponent>();
 		health_component_ = owner_->getComponent<engine::component::HealthComponent>();
 		// 检查组件是否存在
-		if (!transform_component_ || !physics_component_ || !sprite_component_||!health_component_||!animation_component_) {
+		if (!transform_component_ || !physics_component_ || !sprite_component_ || !health_component_ || !animation_component_) {
 			spdlog::error("Player 对象缺少必要组件！");
 		}
 
@@ -56,7 +56,7 @@ namespace game::component {
 		if (health_component_->isAlive())
 		{
 			spdlog::debug("玩家受到了 {} 点伤害，当前生命值: {}/{}。",
-				damage, health_component_->getCurrentHealth(), 
+				damage, health_component_->getCurrentHealth(),
 				health_component_->getMaxHealth());
 			setState(std::make_unique<state::HurtState>(this));
 		}
@@ -86,6 +86,16 @@ namespace game::component {
 		spdlog::debug("玩家组件正在切换到状态: {}", typeid(*current_state_).name());
 		current_state_->enter();
 	}
+
+	bool PlayerComponent::is_on_ground() const
+	{
+		return coyote_timer_ <= coyote_time_ || physics_component_->hasCollidedBelow();
+	}
+
+
+
+
+
 	void PlayerComponent::handleInput(engine::core::Context& context)
 	{
 		if (!current_state_)
@@ -103,10 +113,45 @@ namespace game::component {
 	{
 		if (!current_state_) return;
 
+		// 一旦离地，开始计时 Coyote Timer
+		if (!physics_component_->hasCollidedBelow())
+		{
+			coyote_timer_ += delta_time;
+		}
+		else
+		{
+			coyote_timer_ = 0.0f;
+		}
+		// 如果处于无敌状态，则进行闪烁
+		if (health_component_->isInvincible())
+		{
+			flash_timer_ += delta_time; // 闪烁计时器增加
+
+			if (flash_timer_ >= 2 * flash_interval_)
+			{
+				flash_timer_ -= 2 * flash_interval_;
+			}
+
+
+			if (flash_timer_ < flash_interval_)
+			{
+				sprite_component_->setHidden(true);
+			}
+			else {
+				sprite_component_->setHidden(false);
+			}
+		}
+
+		else
+			if (sprite_component_->isHidden())
+			{
+				sprite_component_->setHidden(false);
+			}
+
 		auto next_state = current_state_->update(delta_time, context);
 		if (next_state) {
 			setState(std::move(next_state));
 		}
 	}
-	
+
 }
