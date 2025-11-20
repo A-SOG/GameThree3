@@ -3,6 +3,7 @@
 #include "context.h"
 #include "config.h"
 #include "../resource/resource_manager.h"
+#include"../audio/audio_player.h"
 #include "../render/renderer.h"
 #include "../render/camera.h"
 #include "../input/input_manager.h"
@@ -50,6 +51,7 @@ namespace engine::core {
         if (!initSDL())  return false;
         if (!initTime()) return false;
         if (!initResourceManager()) return false;
+        if (!initAudioPlayer())return false;
         if (!initRenderer()) return false;
         if (!initCamera()) return false;
         if (!initInputManager()) return false;
@@ -179,6 +181,22 @@ namespace engine::core {
         return true;
     }
 
+    bool GameApp::initAudioPlayer()
+    {
+        try {
+            audio_player_ = std::make_unique<engine::audio::AudioPlayer>(resource_manager_.get());
+
+       }
+        catch(const std::exception&e)
+        {
+            spdlog::error("初始化音频播放器失败: {}", e.what());
+            return false;
+        }
+        spdlog::trace("音频播放器初始化成功。");
+        return true;
+
+    }
+
     bool GameApp::initRenderer() {
         try {
             renderer_ = std::make_unique<engine::render::Renderer>(sdl_renderer_, resource_manager_.get());
@@ -235,7 +253,8 @@ namespace engine::core {
             context_ = std::make_unique<engine::core::Context>
                 (*input_manager_, *renderer_,
                     *camera_, *resource_manager_,
-                    *physics_engine_);
+                    *physics_engine_,
+                    *audio_player_);
         }
         catch (const std::exception& e) {
             spdlog::error("初始化上下文失败: {}", e.what());

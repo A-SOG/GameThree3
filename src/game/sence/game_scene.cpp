@@ -8,6 +8,7 @@
 #include "../../engine/component/collider_component.h"
 #include "../../engine/component/tilelayer_component.h"
 #include "../../engine/component/animation_component.h"
+#include "../../engine/audio/audio_player.h"
 #include "../../engine/component/health_component.h"
 #include "../../engine/physics/physics_engine.h"
 #include "../../engine/scene/level_loader.h"
@@ -24,7 +25,7 @@
 namespace game::scene {
 
   
-    GameScene::GameScene(std::string name, engine::core::Context& context, engine::scene::SceneManager& scene_manager)
+    GameScene::GameScene(const std::string& name, engine::core::Context& context, engine::scene::SceneManager& scene_manager)
         : Scene(name, context, scene_manager) {
         spdlog::trace("GameScene 构造完成。");
     }
@@ -51,6 +52,10 @@ namespace game::scene {
             context_.getInputManager().setShouldQuit(true);
             return;
         }
+
+        context_.getAudioPlayer().setMusicVolume(0.2f);//背景音乐音量为20%
+        context_.getAudioPlayer().setSoundVolume(0.5f);//音效音量为50%
+        context_.getAudioPlayer().playMusic("assets/audio/hurry_up_and_run.ogg", true, 1000);
 
         Scene::init();
         spdlog::trace("GameScene 初始化完成。");
@@ -249,6 +254,10 @@ namespace game::scene {
             }
             // 玩家跳起效果
             player->getComponent<engine::component::PhysicsComponent>()->velocity_.y = -300.0f;  // 向上跳起
+            // 播放音效
+            context_.getAudioPlayer().playSound("assets/audio/punch2a.mp3");
+
+
         }
         // 踩踏判断失败，玩家受伤
         else {
@@ -269,6 +278,7 @@ namespace game::scene {
         item->setNeedRemove(true);  // 标记道具为待删除状态
         auto item_aabb = item->getComponent<engine::component::ColliderComponent>()->getWorldAABB();
         createEffect(item_aabb.position + item_aabb.size / 2.0f, item->getTag());  // 创建特效
+        context_.getAudioPlayer().playSound("assets/audio/poka01.mp3");         // 播放音效
     }
 
     void GameScene::createEffect(const glm::vec2& center_pos, const std::string& tag)

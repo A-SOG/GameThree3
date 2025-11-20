@@ -6,7 +6,7 @@
 #include "../component/collider_component.h"
 #include "../component/physics_component.h"
 #include "../component/animation_component.h"
-
+#include"../component/audio_component.h"
 #include"../component/health_component.h"
 #include "../object/game_object.h"
 #include "../scene/scene.h"
@@ -292,6 +292,28 @@ namespace engine::scene {
                     addAnimation(anim_json, ac, src_size);
 
                 }
+                //获取音效信息并设置
+                auto sound_string = getTileProperty<std::string>(tile_json, "sound");
+                if (sound_string)
+                {
+                    nlohmann::json sound_json;
+                    try {
+                        sound_json = nlohmann::json::parse(sound_string.value());
+                    }
+                    catch (const nlohmann::json::parse_error& e)
+                    {
+                        spdlog::error("解析音效 JSON 字符串失败: {}", e.what());
+                        continue;// 跳过此对象
+                    }
+
+                    // 添加AudioComponent
+                    auto* audio_component = game_object->addComponent<engine::component::AudioComponent>(&scene.getContext().getAudioPlayer(),
+                        &scene.getContext().getCamera());
+                    // 添加音效到 AudioComponent
+                    addSound(sound_json, audio_component);
+                }
+
+
                 // 获取生命值信息并设置
                 auto health = getTileProperty<int>(tile_json, "health");
                 if (health) {
@@ -357,6 +379,26 @@ namespace engine::scene {
 
         }
 
+    }
+    void LevelLoader::addSound(const nlohmann::json& sound_json, engine::component::AudioComponent* audio_component)
+    {
+        if (!sound_json.is_object() || !audio_component)
+        {
+            spdlog::error("无效的音效 JSON 或 AudioComponent 指针。");
+            return;
+        }
+
+        for (const auto& sound : sound_json.items()) {
+
+            const std::string& sound_id = sound.key();
+            const std::string& sound_path = sound.value();
+            if (sound_id.empty() || sound_path.empty()) {
+                spdlog::warn("音效 '{}' 缺少必要信息。", sound_id);
+                continue;
+            }
+            // 添加音效到 AudioComponent
+            audio_component->addSound(sound_id, sound_path);
+        }
     }
     std::optional<engine::utils::Rect> LevelLoader::getColliderRect(const nlohmann::json& tile_json)
     {

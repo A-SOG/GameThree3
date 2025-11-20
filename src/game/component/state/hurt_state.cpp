@@ -6,6 +6,7 @@
 #include "../../../engine/core/context.h"
 #include "../../../engine/component/physics_component.h"
 #include "../../../engine/component/sprite_component.h"
+#include "../../../engine/component/audio_component.h"
 #include <glm/common.hpp>
 
 namespace game::component::state {
@@ -22,7 +23,9 @@ namespace game::component::state {
             knockback_velocity.x = -knockback_velocity.x;  // 变成向右
         }
         physics_component->velocity_ = knockback_velocity;  // 设置击退速度
-
+        if (auto* audio_component = player_component_->getAudioComponent(); audio_component) {
+            audio_component->playSound("hurt");  // 播放受伤音效
+        }
     }
 
     void HurtState::exit() {

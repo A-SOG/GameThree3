@@ -17,7 +17,7 @@ namespace game::scene {
 
         engine::object::GameObject* player_ = nullptr;//保存玩家对象的指针，方便访问
     public:
-        GameScene(std::string name, engine::core::Context& context, engine::scene::SceneManager& scene_manager);
+        GameScene(const std::string& name, engine::core::Context& context, engine::scene::SceneManager& scene_manager);
 
         // 覆盖场景基类的核心方法
         void init() override;

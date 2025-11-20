@@ -6,6 +6,7 @@
 #include "../../engine/component/sprite_component.h"
 #include "../../engine/component/animation_component.h"
 #include "../../engine/component/health_component.h"
+#include "../../engine/component/audio_component.h"
 #include <spdlog/spdlog.h>
 
 namespace game::component {
@@ -21,7 +22,7 @@ namespace game::component {
         physics_component_ = owner_->getComponent<engine::component::PhysicsComponent>();
         sprite_component_ = owner_->getComponent<engine::component::SpriteComponent>();
         animation_component_ = owner_->getComponent<engine::component::AnimationComponent>();
-
+        audio_component_ = owner_->getComponent<engine::component::AudioComponent>();
         // 检查是否所有必需的组件都存在
         if (!transform_component_ || !physics_component_ || !sprite_component_ || !animation_component_) {
             spdlog::error("GameObject '{}' 上的 AIComponent 缺少必需的组件", owner_->getName());
@@ -51,7 +52,7 @@ namespace game::component {
         bool success = false;
         if (auto* health_component = getOwner()->getComponent<engine::component::HealthComponent>(); health_component) {
             success = health_component->takeDamage(damage);
-            // TODO: 可以设置受伤/死亡后的行为
+          
         }
         return success;
     }
@@ -63,4 +64,4 @@ namespace game::component {
         return true;    // 如果没有生命组件，默认返回存活状态
     }
 
-} // namespace game::component
+} // namespace

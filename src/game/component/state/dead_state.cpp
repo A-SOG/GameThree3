@@ -4,6 +4,7 @@
 #include "../../../engine/component/animation_component.h"
 #include "../../../engine/component/physics_component.h"
 #include "../../../engine/component/collider_component.h"
+#include "../../../engine/component/audio_component.h"
 
 namespace game::component::state {
 
@@ -15,10 +16,12 @@ namespace game::component::state {
         auto physics_component = player_component_->getPhysicsComponent();
         physics_component->velocity_ = glm::vec2(0.0f, -200.0f);  // 向上击退
 
-        // 禁用碰
         auto collider_component = player_component_->getOwner()->getComponent<engine::component::ColliderComponent>();
         if (collider_component) {
             collider_component->setActive(false);
+        }
+        if (auto* audio_component = player_component_->getAudioComponent();audio_component) {
+            audio_component->playSound("dead");  // 播放死亡音效
         }
     }
 

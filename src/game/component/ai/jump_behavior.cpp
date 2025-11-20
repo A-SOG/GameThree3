@@ -4,6 +4,7 @@
 #include "../../../engine/component/transform_component.h"
 #include "../../../engine/component/sprite_component.h"
 #include "../../../engine/component/animation_component.h"
+#include "../../../engine/component/audio_component.h"
 #include "../../../engine/object/game_object.h"
 #include <spdlog/spdlog.h>
 
@@ -35,6 +36,7 @@ namespace game::component::ai {
         auto* transform_component = ai_component.getTransformComponent();
         auto* sprite_component = ai_component.getSpriteComponent();
         auto* animation_component = ai_component.getAnimationComponent();
+        auto* audio_component = ai_component.getAudioComponent();
         if (!physics_component || !transform_component || !sprite_component || !animation_component) {
             spdlog::error("JumpBehavior：缺少必要的组件，无法执行跳跃行为。");
             return;
@@ -42,6 +44,12 @@ namespace game::component::ai {
 
         auto is_on_ground = physics_component->hasCollidedBelow();      // 着地标志
         if (is_on_ground) {    // 如果在地面上
+            if (is_on_ground)
+            {
+                if (audio_component && jump_timer_ < 0.001f) {
+                    audio_component->playSound("cry", -1, true);
+                }
+            }
             jump_timer_ += delta_time;              // 增加跳跃计时器
             physics_component->velocity_.x = 0.0f;  // 停止水平移动（否则会有惯性）
 
@@ -78,4 +86,4 @@ namespace game::component::ai {
         }
     }
 
-} // namespace game::component::ai 
+} // namespace

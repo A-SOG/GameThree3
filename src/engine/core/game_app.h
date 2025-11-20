@@ -25,6 +25,9 @@ namespace engine::scene {
     class SceneManager;
 }
 
+namespace engine::audio {
+    class AudioPlayer;
+}
 namespace engine::core {        // 命名空间的最佳实践：与文件路径一致
     class Time;
     class Config;
@@ -49,6 +52,7 @@ namespace engine::core {        // 命名空间的最佳实践：与文件路径
         std::unique_ptr<engine::core::Context> context_;
         std::unique_ptr<engine::scene::SceneManager> scene_manager_;
         std::unique_ptr<engine::physics::PhysicsEngine> physics_engine_;
+        std::unique_ptr<engine::audio::AudioPlayer>audio_player_;
     public:
         GameApp();
         ~GameApp();
@@ -76,6 +80,7 @@ namespace engine::core {        // 命名空间的最佳实践：与文件路径
         [[nodiscard]] bool initSDL();
         [[nodiscard]] bool initTime();
         [[nodiscard]] bool initResourceManager();
+        [[nodiscard]] bool initAudioPlayer();
         [[nodiscard]] bool initRenderer();
         [[nodiscard]] bool initCamera();
         [[nodiscard]] bool initInputManager();

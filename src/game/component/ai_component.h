@@ -10,6 +10,7 @@ namespace engine::component {
     class PhysicsComponent;
     class SpriteComponent;
     class AnimationComponent;
+    class AudioComponent;
 }
 
 namespace game::component {
@@ -31,7 +32,7 @@ namespace game::component {
         engine::component::PhysicsComponent* physics_component_ = nullptr;
         engine::component::SpriteComponent* sprite_component_ = nullptr;
         engine::component::AnimationComponent* animation_component_ = nullptr;
-
+        engine::component::AudioComponent* audio_component_ = nullptr;
     public:
         AIComponent() = default;
         ~AIComponent() override = default;
@@ -46,12 +47,12 @@ namespace game::component {
         bool takeDamage(int damage);        ///< @brief 处理伤害逻辑，返回是否造成伤害
         bool isAlive() const;               ///< @brief 检查对象是否存活
 
-        // --- Setters and Getters ---
+      
         engine::component::TransformComponent* getTransformComponent() const { return transform_component_; }
         engine::component::PhysicsComponent* getPhysicsComponent() const { return physics_component_; }
         engine::component::SpriteComponent* getSpriteComponent() const { return sprite_component_; }
         engine::component::AnimationComponent* getAnimationComponent() const { return animation_component_; }
-
+        engine::component::AudioComponent* getAudioComponent() const { return audio_component_; }
     private:
         // 核心循环方法
         void init() override;

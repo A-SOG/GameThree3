@@ -151,7 +151,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\engine\audio\audio_player.cpp" />
     <ClCompile Include="src\engine\component\animation_component.cpp" />
+    <ClCompile Include="src\engine\component\audio_component.cpp" />
     <ClCompile Include="src\engine\component\collider_component.cpp" />
     <ClCompile Include="src\engine\component\component.cpp" />
     <ClCompile Include="src\engine\component\health_component.cpp" />
@@ -198,7 +200,9 @@
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\engine\audio\audio_player.h" />
     <ClInclude Include="src\engine\component\animation_component.h" />
+    <ClInclude Include="src\engine\component\audio_component.h" />
     <ClInclude Include="src\engine\component\collider_component.h" />
     <ClInclude Include="src\engine\component\component.h" />
     <ClInclude Include="src\engine\component\health_component.h" />
